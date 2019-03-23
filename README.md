@@ -38,7 +38,7 @@ Containerized pool of multiple Tor instances with load balancing and HTTP proxy.
 
 Start 5 Tor instances:
 ```bash
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool --Tors=5
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --Tors=5
 ```
 
 HTTP proxy is accessible at port 9300:
@@ -53,12 +53,12 @@ curl --socks5 localhost:9200 http://ipinfo.io/ip
 
 To make Tor instances rotate:
 ```
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool --MaxCircuitDirtiness 30 --NewCircuitPeriod 30
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --MaxCircuitDirtiness 30 --NewCircuitPeriod 30
 ```
 
 Use only US exit nodes:
 ```
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool --ExitNodes {us}
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --ExitNodes {us}
 ```
 
 [List of available options](https://www.torproject.org/docs/tor-manual.html.en)

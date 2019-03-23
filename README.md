@@ -1,3 +1,6 @@
+[![Docker Pulls](https://img.shields.io/docker/cloud/build/u1234x1234/torpool.svg?style=flat-square)](https://hub.docker.com/r/u1234x1234/torpool/)
+[![Size](https://images.microbadger.com/badges/image/u1234x1234/torpool.svg)](https://hub.docker.com/r/u1234x1234/torpool/)
+
 # torpool
 
 Containerized pool of multiple Tor instances with load balancing and HTTP proxy.
@@ -5,7 +8,7 @@ Containerized pool of multiple Tor instances with load balancing and HTTP proxy.
 # Key features
 
 * Multiple [Tor](https://www.torproject.org/) instances with a single endpoint for the end user
-* Easy configured (IP rotation, exit node selection)
+* Easy configured (IP rotation, country selection of the exit node, etc)
 * Lightweight alpine based Docker image
 * HTTP proxy with [Privoxy](https://www.privoxy.org/)
 * HTTP/Socks load balancing with [HAProxy](http://www.haproxy.org/)
@@ -48,7 +51,7 @@ Socks is accessible at port 9200:
 curl --socks5 localhost:9200 http://ipinfo.io/ip
 ```
 
-To make Tor instances rotating:
+To make Tor instances rotate:
 ```
 docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool --MaxCircuitDirtiness 30 --NewCircuitPeriod 30
 ```

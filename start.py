@@ -23,8 +23,6 @@ def run_tor_process(tor_id, additional_args, host='127.0.0.1'):
         '--RunAsDaemon', '1',
         '--ClientOnly', '1',
         '--ExitRelay', '0',
-        '--MaxCircuitDirtiness', '30',
-        '--NewCircuitPeriod', '30',
     ]
     if additional_args:
         command += additional_args
@@ -74,7 +72,7 @@ def update_haproxy_config(config_path, n_processes):
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--Tors', type=int, default=2)
+    arg_parser.add_argument('--Tors', type=int, default=1)
     args = arg_parser.parse_known_args()
 
     parsed_args, additional_args = args

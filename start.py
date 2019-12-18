@@ -9,6 +9,8 @@ from jinja2 import Template
 PRIVOXY_BASE_PORT = 8118
 SOCKS_BASE_PORT = 9050
 HAPROXY_CONFIG_PATH = '/etc/haproxy.conf'
+HAPROXY_USERNAME_FILE = '/run/secrets/haproxy_username'
+HAPROXY_PASSWORD_FILE = '/run/secrets/haproxy_password'
 
 
 def run_tor_process(tor_id, additional_args, host='127.0.0.1'):
@@ -58,15 +60,24 @@ def run_privoxy_process(tor_id):
     privoxy_process = Popen(['privoxy', '--no-daemon', '--pidfile', pidfile, new_config_path])
 
 
-def update_haproxy_config(config_path, n_processes, haproxy_username, haproxy_password):
+def read_file(path):
+    try:
+        with open(path, 'r') as in_file:
+            return in_file.read()
+    except Exception as e:
+        print(e)
+        return None
+
+
+def update_haproxy_config(config_path, n_processes, username, password):
     with open(config_path, 'r') as in_file:
         template = Template(in_file.read())
 
     config = template.render(
         http_ports=[PRIVOXY_BASE_PORT + i for i in range(n_processes)],
         socks_ports=[SOCKS_BASE_PORT + i for i in range(n_processes)],
-        haproxy_username=haproxy_username,
-        haproxy_password=haproxy_password,
+        haproxy_username=username if username else 'haproxy',
+        haproxy_password=password if password else 'password',
     )
 
     with open(config_path, 'w') as out_file:
@@ -76,11 +87,10 @@ def update_haproxy_config(config_path, n_processes, haproxy_username, haproxy_pa
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--Tors', type=int, default=1)
-    arg_parser.add_argument('--HAProxyUsername', type=str, default='haproxy')
-    arg_parser.add_argument('--HAProxyPassword', type=str, default='password')
     args = arg_parser.parse_known_args()
 
     parsed_args, additional_args = args
+    print(parsed_args, additional_args)
 
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
@@ -92,6 +102,9 @@ if __name__ == '__main__':
     for tor_id in range(parsed_args.Tors):
         run_privoxy_process(tor_id)
 
-    update_haproxy_config(HAPROXY_CONFIG_PATH, parsed_args.Tors, parsed_args.HAProxyUsername, parsed_args.HAProxyPassword)
+    haproxy_username = read_file(HAPROXY_USERNAME_FILE)
+    haproxy_password = read_file(HAPROXY_PASSWORD_FILE)
+
+    update_haproxy_config(HAPROXY_CONFIG_PATH, parsed_args.Tors, haproxy_username, haproxy_password)
 
     check_call(['haproxy', '-f', HAPROXY_CONFIG_PATH, '-db'])

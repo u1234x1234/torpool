@@ -72,7 +72,7 @@ Then open in browser http://localhost:9500/haproxy_stats and enter HAProxy usern
 echo "pss" > pass_file
 docker run -d -p 9200:9200 -p 9300:9300 -p 9500:9500 -v "$PWD/pass_file":/run/secrets/haproxy_password u1234x1234/torpool:1.0.2
 ```
-Password expected location `/run/secrets/haproxy_password`, username: `/run/secrets/haproxy_username`.
+Expected password location: `/run/secrets/haproxy_password`, username: `/run/secrets/haproxy_username`.
 
 # Why
 

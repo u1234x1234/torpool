@@ -67,7 +67,7 @@ To view HAProxy stats page:
 ```
 docker run -d -p 9200:9200 -p 9300:9300 -p 9500:9500 u1234x1234/torpool:1.0.2
 ```
-Then open in browser http://localhost:9500/haproxy_stats and enter HAProxy username and password. The default username is `haproxy`, password is `password`, but it can be changed using through the volume mounting:
+Then open in browser http://localhost:9500/haproxy_stats and enter HAProxy username and password. The default username is `haproxy`, password is `password`, but it can be changed using using the volume mounting:
 ```
 echo "pss" > pass_file
 docker run -d -p 9200:9200 -p 9300:9300 -p 9500:9500 -v "$PWD/pass_file":/run/secrets/haproxy_password u1234x1234/torpool:1.0.2

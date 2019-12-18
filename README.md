@@ -38,7 +38,7 @@ Containerized pool of multiple Tor instances with load balancing and HTTP proxy.
 
 Start 5 Tor instances:
 ```bash
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --Tors=5
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.1 --Tors=5
 ```
 
 HTTP proxy is accessible at port 9300:
@@ -53,16 +53,22 @@ curl --socks5 localhost:9200 http://ipinfo.io/ip
 
 To make Tor instances rotate:
 ```
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --MaxCircuitDirtiness 30 --NewCircuitPeriod 30
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.1 --MaxCircuitDirtiness 30 --NewCircuitPeriod 30
 ```
 
 Use only US exit nodes:
 ```
-docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.0 --ExitNodes {us}
+docker run -d -p 9200:9200 -p 9300:9300 u1234x1234/torpool:1.0.1 --ExitNodes {us}
 ```
 
-[List of available options](https://www.torproject.org/docs/tor-manual.html.en)
+[List of available Tor options](https://www.torproject.org/docs/tor-manual.html.en)
 
+To view HAProxy stats page:
+```
+export HAPASS=123
+docker run -d -p 9200:9200 -p 9300:9300 -p 9500:9500 u1234x1234/torpool:1.0.1 --HAProxyPassword=$HAPASS
+```
+Then open in browser http://localhost:9500/haproxy_stats and enter HAProxy username and password. The default username is `haproxy`, password is `password`, but it can be changed using `HAProxyUsername`, `HAProxyPassword` as in the example above.
 
 # Why
 

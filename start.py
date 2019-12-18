@@ -58,13 +58,16 @@ def run_privoxy_process(tor_id):
     privoxy_process = Popen(['privoxy', '--no-daemon', '--pidfile', pidfile, new_config_path])
 
 
-def update_haproxy_config(config_path, n_processes):
+def update_haproxy_config(config_path, n_processes, haproxy_username, haproxy_password):
     with open(config_path, 'r') as in_file:
         template = Template(in_file.read())
 
     config = template.render(
         http_ports=[PRIVOXY_BASE_PORT + i for i in range(n_processes)],
-        socks_ports=[SOCKS_BASE_PORT + i for i in range(n_processes)])
+        socks_ports=[SOCKS_BASE_PORT + i for i in range(n_processes)],
+        haproxy_username=haproxy_username,
+        haproxy_password=haproxy_password,
+    )
 
     with open(config_path, 'w') as out_file:
         out_file.write(config)
@@ -73,10 +76,11 @@ def update_haproxy_config(config_path, n_processes):
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--Tors', type=int, default=1)
+    arg_parser.add_argument('--HAProxyUsername', type=str, default='haproxy')
+    arg_parser.add_argument('--HAProxyPassword', type=str, default='password')
     args = arg_parser.parse_known_args()
 
     parsed_args, additional_args = args
-    print(parsed_args, additional_args)
 
     signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
@@ -88,6 +92,6 @@ if __name__ == '__main__':
     for tor_id in range(parsed_args.Tors):
         run_privoxy_process(tor_id)
 
-    update_haproxy_config(HAPROXY_CONFIG_PATH, parsed_args.Tors)
+    update_haproxy_config(HAPROXY_CONFIG_PATH, parsed_args.Tors, parsed_args.HAProxyUsername, parsed_args.HAProxyPassword)
 
     check_call(['haproxy', '-f', HAPROXY_CONFIG_PATH, '-db'])

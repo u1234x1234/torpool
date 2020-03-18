@@ -74,6 +74,20 @@ docker run -d -p 9200:9200 -p 9300:9300 -p 9500:9500 -v "$PWD/pass_file":/run/se
 ```
 Expected password location: `/run/secrets/haproxy_password`, username: `/run/secrets/haproxy_username`.
 
+#### Docker-compose example:
+```yaml
+version: '3'
+services:
+  torpool:
+    image: u1234x1234/torpool:1.0.2
+    command: ['--Tors', '2', '--NewCircuitPeriod', '30', '--MaxCircuitDirtiness', '30']
+    container_name: torpool
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+      - "9500:9500"
+```
+
 # Why
 
 There is a lot of great projects on github, but non of them provides all the options listed above. Some of them:

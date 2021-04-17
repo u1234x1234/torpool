@@ -1,10 +1,10 @@
-FROM python:3.6-alpine
+FROM haproxytech/haproxy-alpine:2.3.9
 
 LABEL maintainer="u1234x1234@gmail.com"
-ENV USERNAME multitor
+ENV USERNAME torpool
 
 RUN apk update && \
-    apk add --no-cache tor bash haproxy privoxy procps py3-pip && \
+    apk add --no-cache tor bash python3 privoxy procps py3-pip && \
     pip install jinja2 && \
     rm -rf /var/cache/apk/*
 
@@ -21,4 +21,4 @@ COPY haproxy.conf /etc/haproxy.conf
 RUN chown ${USERNAME}:${USERNAME} -R /etc/haproxy.conf
 
 USER ${USERNAME}
-ENTRYPOINT [ "python", "start.py"]
+ENTRYPOINT [ "python3", "start.py"]
